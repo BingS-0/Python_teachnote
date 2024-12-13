@@ -1,0 +1,20 @@
+import pyautogui
+import keyboard
+import time
+
+print("按下 ESC 键退出程序，最多截图 100 次。")
+
+for i in range(100):
+    time.sleep(1)  # 等待 1 秒
+    screenshot = pyautogui.screenshot()  # 截图
+    screenshot.save(f"screenshot_{i + 1}.png")  # 保存截图
+    print(f"截图 {i + 1} 已保存！按空格继续，或按 ESC 退出。")
+    
+    if keyboard.is_pressed('esc'):
+        print("退出程序。")
+        break
+    
+    # 等待空格键
+    keyboard.wait('space')
+
+print("程序结束。")
