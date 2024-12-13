@@ -1,20 +1,44 @@
 import pyautogui
 import keyboard
 import time
+import os
+from datetime import datetime
 
-print("按下 ESC 键退出程序，最多截图 100 次。")
+# 创建保存截图的文件夹
+folder_name = 'cut'
+if not os.path.exists(folder_name):
+    os.makedirs(folder_name)
+
+print("程序开始，按下 ESC 键退出，最多截图 100 次。")
+
+# 获取屏幕宽高
+screen_width, screen_height = pyautogui.size()
+
+# 计算中间一半的区域
+left = screen_width // 4
+top = screen_height // 4
+width = screen_width // 2
+height = screen_height // 2
 
 for i in range(100):
-    time.sleep(1)  # 等待 1 秒
-    screenshot = pyautogui.screenshot()  # 截图
-    screenshot.save(f"screenshot_{i + 1}.png")  # 保存截图
-    print(f"截图 {i + 1} 已保存！按空格继续，或按 ESC 退出。")
-    
+    # 等待 1 秒并检查 ESC 键
+    for _ in range(10):  # 每 0.1 秒检查一次，总共 1 秒
+        if keyboard.is_pressed('esc'):
+            print("退出程序。")
+            break
+        time.sleep(0.1)
+    else:
+        # 只有在没有按下 ESC 时才执行截图
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")  # 获取当前时间戳
+        screenshot = pyautogui.screenshot(region=(left, top, width, height))
+        screenshot.save(os.path.join(folder_name, f"screenshot_{timestamp}{i+1}.png"))  # 保存截图
+        print(f"截图已保存到 '{folder_name}' 文件夹，文件名为 'screenshot_{timestamp}.png'")
+
+        # 自动按下空格
+        keyboard.press('space')
+        keyboard.release('space')
+    # 检查是否按下 ESC，退出外层循环
     if keyboard.is_pressed('esc'):
-        print("退出程序。")
         break
-    
-    # 等待空格键
-    keyboard.wait('space')
 
 print("程序结束。")
